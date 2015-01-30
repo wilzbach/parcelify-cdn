@@ -41,7 +41,9 @@ function serveBundle(res, builder) {
   builder.then(function(bundle) {
     res.setHeader('content-type', 'text/css');
     bundle.forEach(function(b){
-      res.write(b);
+      if(b != undefined){
+        res.write(b);
+      }
     });
     res.end();
   });

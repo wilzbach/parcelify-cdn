@@ -137,26 +137,29 @@ module.exports = function bundler(opts) {
           }).catch(function(err) {
             handleError(err);
           });
+
+          function handleError(err) {
+            if (opts.env) {
+              err.dirPath = opts.env.dirPath;
+            }
+
+            inProgress[key].emit('error', err);
+            destroyInProgress();
+
+            c.statuses.db.put(pkg, {
+              ok: false,
+              error: xtend({
+                  message: err.message,
+                  stack: err.stack
+                },
+                err
+              )
+            });
+
+            return reject(err);
+          }
+
         };
-
-        function handleError(err) {
-          err.dirPath = opts.env.dirPath;
-
-          inProgress[key].emit('error', err);
-          destroyInProgress();
-
-          c.statuses.db.put(pkg, {
-            ok: false,
-            error: xtend({
-                message: err.message,
-                stack: err.stack
-              },
-              err
-            )
-          });
-
-          return reject(err);
-        }
       });
     }
   };
