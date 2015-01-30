@@ -1,0 +1,29 @@
+{
+  "name": "parcelify-cdn",
+  "version": "1.0.0",
+  "description": "Parcelify as a service",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js 5000"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/greenify/parcelify-cdn"
+  },
+  "author": "greenify",
+  "license": "MIT",
+  "dependencies": {
+    "bluebird": "^2.9.3",
+    "compression": "^1.3.0",
+    "crypto": "0.0.3",
+    "express": "^4.11.1",
+    "express-winston": "^0.2.12",
+    "parcelify": "^0.12.5",
+    "request": "^2.51.0",
+    "response-time": "^2.2.0",
+    "semver": "^4.2.0",
+    "winston": "^0.8.3",
+    "xtend": "^4.0.0"
+  }
+}
