@@ -19,10 +19,17 @@
     "crypto": "0.0.3",
     "express": "^4.11.1",
     "express-winston": "^0.2.12",
+    "level": "^0.18.0",
+    "level-sublevel": "^6.4.2",
+    "level-ttl": "^2.2.0",
+    "npm-publish-stream": "^1.0.2",
     "parcelify": "^0.12.5",
     "request": "^2.51.0",
     "response-time": "^2.2.0",
+    "rimraf": "^2.2.8",
+    "scopedfs": "^0.1.0",
     "semver": "^4.2.0",
+    "temp": "^0.8.1",
     "winston": "^0.8.3",
     "xtend": "^4.0.0"
   }

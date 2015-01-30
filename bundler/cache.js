@@ -11,6 +11,7 @@ var Cache = function (name, db, opts) {
   this.name = name;
   this.hashfxn = opts.hashfxn || opts.hashFunction || defaultHashFxn;
   this.ttl = opts.ttl;
+  this.log = opts.log;
 };
 
 Cache.prototype.get = function get(key, cb) {

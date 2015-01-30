@@ -47,6 +47,10 @@ var transports = {
 };
 var logger = new(winston.Logger)(transports);
 
+app.get('/', function mainpage(req, res){
+  res.sendFile("./README.md", {root: __dirname});
+});
+
 // load modules
 var single = require("./single");
 var bundler = require("./bundler/index");

@@ -1,8 +1,7 @@
 var NpmPublishStream = require('npm-publish-stream'),
-    log = require('minilog')('cull'),
     semver = require('semver');
 
-module.exports = function _cull(cache) {
+module.exports = function _cull(cache, log) {
   var aliases = cache.db,
       pubStream = new NpmPublishStream({
         refreshRate: 2 * 60 * 1000,
