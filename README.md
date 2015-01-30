@@ -7,6 +7,7 @@ Serves cached css resources of a npm module.
 
 Inspired by [browserify-cdn](https://github.com/jesusabdullah/browserify-cdn)
 
+This service runs [parcelify](https://github.com/rotundasoftware/parcelify) (browserify for css) and then the output is [displayed](http://parce.li/bundle/biojs-vis-msa) + cached.
 
 # API
 
