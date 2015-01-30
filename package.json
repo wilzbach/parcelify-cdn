@@ -23,6 +23,7 @@
     "level-sublevel": "^6.4.2",
     "level-ttl": "^2.2.0",
     "npm-publish-stream": "^1.0.2",
+    "npmi": "^1.0.0",
     "parcelify": "^0.12.5",
     "request": "^2.51.0",
     "response-time": "^2.2.0",
