@@ -84,7 +84,7 @@ var c = module.exports = function (location) {
 
   aliases = cull(new Cache('aliases', db, {
     hashfxn: function (o) {
-      return o.name + '@' + o.semver;
+      return o.name + '@' + o.version;
     },
     ttl: 1 * DAYS
   }));

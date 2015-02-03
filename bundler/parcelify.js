@@ -12,18 +12,22 @@ module.exports = function(opts) {
     var config = require(join(cwd, "package.json"));
     var cssPath = join(cwd, "bundle.css");
 
-    var p = parcelify(join(cwd, config.main), {
-      bundles: {
-        style: cssPath
-      }
-    });
-    p.on("done", function() {
-      fs.readFile(cssPath, "utf8", function(err, body){
-        resolve(body);
+    try {
+      var p = parcelify(join(cwd, config.main), {
+        bundles: {
+          style: cssPath
+        }
       });
-    });
-    p.on("error", function(err) {
-      reject(err);
-    });
+      p.on("done", function() {
+        fs.readFile(cssPath, "utf8", function(err, body) {
+          resolve(body);
+        });
+      });
+      p.on("error", function(err) {
+        reject(err);
+      });
+    } catch (e) {
+      reject(e);
+    }
   });
 };

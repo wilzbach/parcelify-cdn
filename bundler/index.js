@@ -127,18 +127,30 @@ module.exports = function bundler(opts) {
             inProgress[key].emit('bundle', bundle);
             destroyInProgress();
 
-            c.aliases.put(pkg, bundle, function noop() {});
+            var dbObj = {
+              status: 200,
+              bundle: bundle
+            };
+            c.aliases.put(pkg, dbObj, function noop() {});
 
             return new q.Promise(function(res, rej) {
               return opts.env.teardown().then(function() {
-                resolve(bundle);
+                resolve(dbObj);
               });
             });
-          }).catch(function(err) {
+          }).error(function(err) {
             handleError(err);
           });
 
-          function handleError(err) {
+          function handleError(e) {
+            var err = {};
+            if (e instanceof Error) {
+              err.stack = e.stack;
+              err.message = e.message;
+            } else {
+              err = e;
+            }
+
             if (opts.env) {
               err.dirPath = opts.env.dirPath;
             }
@@ -146,17 +158,14 @@ module.exports = function bundler(opts) {
             inProgress[key].emit('error', err);
             destroyInProgress();
 
-            c.statuses.db.put(pkg, {
-              ok: false,
-              error: xtend({
-                  message: err.message,
-                  stack: err.stack
-                },
-                err
-              )
+            //c.statuses.db.put(pkg, {
+            c.aliases.put(pkg, {
+              status: 500,
+              error: err
+            }, function noop() {
+              return reject(err);
             });
 
-            return reject(err);
           }
 
         };

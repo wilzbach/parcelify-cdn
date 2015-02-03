@@ -1,5 +1,6 @@
-module.exports = function(app, bundle) {
+var q = require("bluebird");
 
+module.exports = function(app, bundle) {
   app.get('/bundle/:name', singular(bundle));
   app.get('/debug-bundle/:name', singular(bundle, {
     debug: true
@@ -40,17 +41,29 @@ function getParams(opts, req) {
 function serveBundle(res, builder) {
   builder.then(function(bundle) {
     res.setHeader('content-type', 'text/css');
-    bundle.forEach(function(b){
-      if(b != undefined){
-        res.write(b);
+    for(var i =0; i < bundle.length; i++){
+      var b = bundle[i];
+      if (b != undefined) {
+        if (b.status === 200) {
+          res.write(b.bundle);
+        } else {
+          return q.reject(b);  
+        }
       }
-    });
+    }
     res.end();
-  });
-  builder.catch(function(err) {
+  }).error(function(err) {
     res.setHeader('content-type', 'text/plain');
     res.statusCode = 500;
-    res.write(JSON.stringify(err));
+    if(!!err.error){
+        err = err.error;
+    }
+    if (!!err.stack) {
+      //res.write("MSG: " + err.message + "\n");
+      res.write(err.stack);
+    } else {
+      res.write(JSON.stringify(err));
+    }
     res.end();
   });
 }

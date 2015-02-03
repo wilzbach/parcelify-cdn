@@ -22,6 +22,7 @@
     "level": "^0.18.0",
     "level-sublevel": "^6.4.2",
     "level-ttl": "^2.2.0",
+    "marked": "^0.3.3",
     "npm-publish-stream": "^1.0.2",
     "npmi": "^1.0.0",
     "parcelify": "^0.12.5",

@@ -3,6 +3,8 @@
 var express = require('express');
 var compress = require('compression');
 var responseTime = require('response-time');
+var marked = require('marked');
+var fs = require('fs');
 var winston = require('winston');
 var expressWinston = require('express-winston');
 var wares = require("./lib/middlewares");
@@ -48,7 +50,13 @@ var transports = {
 var logger = new(winston.Logger)(transports);
 
 app.get('/', function mainpage(req, res){
-  res.sendFile("./README.md", {root: __dirname});
+  //res.sendFile("./README.md", {root: __dirname});
+  fs.readFile("./README.md", "utf8", function(err,body){
+    if(err){
+      res.status(500).end(err);
+    }
+    res.status(200).send(marked(body));
+  });
 });
 
 // load modules
