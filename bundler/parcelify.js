@@ -2,6 +2,7 @@ var parcelify = require("parcelify");
 var fs = require("fs");
 var q = require("bluebird");
 var join = require('path').join;
+var browserify = require("browserify");
 
 module.exports = function(opts) {
   var moduleName = opts.pkg.name;
@@ -12,8 +13,16 @@ module.exports = function(opts) {
     var config = require(join(cwd, "package.json"));
     var cssPath = join(cwd, "bundle.css");
 
+    var b = browserify({
+      basedir: cwd
+    });
+
+    b.add(join(cwd, config.main), {
+      expose: moduleName
+    });
+
     try {
-      var p = parcelify(join(cwd, config.main), {
+      var p = parcelify(b, {
         bundles: {
           style: cssPath
         }
@@ -29,5 +38,6 @@ module.exports = function(opts) {
     } catch (e) {
       reject(e);
     }
+    b.bundle();
   });
 };
