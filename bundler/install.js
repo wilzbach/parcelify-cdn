@@ -14,7 +14,9 @@ module.exports = function(opts) {
     path: opts.env.dirPath, // installation path [default: '.']
     forceInstall: false, // force install if set to true (even if already installed, it will do a reinstall) [default: false]
     npmLoad: { // npm.load(options, callback): this is the "options" given to npm.load()
-      loglevel: 'error' // [default: {loglevel: 'silent'}]
+      // we need 'error' to generate a log output in case of errors
+      loglevel: 'error', // [default: {loglevel: 'silent'}]
+      "ignore-scripts": true,
     }
   };
   return new q.Promise(function(resolve, reject) {

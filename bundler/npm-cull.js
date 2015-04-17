@@ -1,6 +1,8 @@
 var NpmPublishStream = require('npm-publish-stream'),
     semver = require('semver');
 
+    var log = console.log;
+
 module.exports = function _cull(cache, log) {
   var aliases = cache.db,
       pubStream = new NpmPublishStream({
