@@ -41,26 +41,30 @@ function getParams(opts, req) {
 function serveBundle(res, builder) {
   builder.then(function(bundle) {
     res.setHeader('content-type', 'text/css');
-    for(var i =0; i < bundle.length; i++){
+    for (var i = 0; i < bundle.length; i++) {
       var b = bundle[i];
       if (b != undefined) {
         if (b.status === 200) {
           res.write(b.bundle);
         } else {
-          return q.reject(b);  
+          return q.reject(b);
         }
       }
     }
     res.end();
-  }).error(function(err) {
+  }).catch(function(err) {
     res.setHeader('content-type', 'text/plain');
     res.statusCode = 500;
-    if(!!err.error){
-        err = err.error;
+    if (!!err.error) {
+      err = err.error;
     }
     if (!!err.stack) {
       //res.write("MSG: " + err.message + "\n");
-      res.write(err.stack);
+      if (!!err.content) {
+        res.write(err.content);
+      } else {
+        res.write(err.stack);
+      }
     } else {
       res.write(JSON.stringify(err));
     }

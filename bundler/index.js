@@ -47,21 +47,27 @@ module.exports = function bundler(opts) {
 
         var key = [moduleName, version].join('@');
 
-        // lookup in the cache
-        c.aliases.get(pkg, function regresolve(err, result) {
-          if (!err) {
-            log.info("cache hit for " + key);
-            resolve(result);
-          } else {
-            buildPkg();
-          }
-        });
 
         if (inProgress[key]) {
           inProgress[key].once('bundle', handleBundleEvent);
           inProgress[key].once('error', handleErrorEvent);
-          return;
+          return reject("build in progress");
         }
+
+        // lookup in the cache
+        return q.promisify(c.aliases.get, c.aliases)(pkg).
+        then(function (result) {
+            log.info("cache hit for " + key);
+            resolve(result);
+        }).catch(function(err){
+            // Set up the EE
+            inProgress[key] = new EventEmitter();
+    
+            // to prevent crashes from 'unhandled error' exceptions
+            inProgress[key].on('error', function noop() {});
+
+            return buildPkg();
+        });
 
         function handleBundleEvent(res) {
           resolve(res);
@@ -86,17 +92,6 @@ module.exports = function bundler(opts) {
 
         function destroyInProgress() {
           inProgress[key] = undefined;
-        }
-
-        // Set up the EE
-        inProgress[key] = new EventEmitter();
-
-        // to prevent crashes from 'unhandled error' exceptions
-        inProgress[key].on('error', function noop() {});
-
-
-        if (core.test(moduleName)) {
-          handleErrorEvent(moduleName + "is a core package");
         }
 
         function buildPkg() {
@@ -138,20 +133,22 @@ module.exports = function bundler(opts) {
                 resolve(dbObj);
               });
             });
-          }).error(function(err) {
+          }).catch(function(err) {
             handleError(err);
-          });
+            return true;
+          }).done();
 
           function handleError(e) {
             var err = {};
             if (e instanceof Error) {
               err.stack = e.stack;
               err.message = e.message;
+              err.content = e.content;
             } else {
               err = e;
             }
 
-            if (opts.env) {
+            if (typeof opts !== "undefined" && opts.env in opts) {
               err.dirPath = opts.env.dirPath;
             }
 
